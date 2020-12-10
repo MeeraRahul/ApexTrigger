@@ -1,0 +1,17 @@
+trigger contactUpdate on Account (after insert) {
+     Account acc = [select id,Only_Default_Contact__c from account where id in : trigger.new];
+  contact ct = new contact();
+  ct.firstName = 'Info';
+  ct.LastName = 'Default';
+  ct.email = 'info@websitedomain.tld';
+  ct.accountId = acc.id;
+
+  insert ct;
+
+   acc.Only_Default_Contact__c = true;
+   update acc;
+
+  
+  
+
+}
