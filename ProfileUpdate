@@ -1,0 +1,28 @@
+trigger accountContact on Account (After update) {
+     if(Trigger.isAfter && Trigger.isUpdate)
+    {
+        Set<Id> AccountIds = new Set<Id>();
+        new list<contact>();
+        for(Account acc : trigger.new)
+        {
+            if(acc.website != null)
+            {
+                AccountIds.add(acc.id);
+            }
+        }
+        
+        if(AccountIds.size()>0)
+        {
+            List<Contact> Contact_List = [select Id,Firstname,Lastname,Profile__c,Accountid,Account.website from contact where Accountid in :AccountIds];
+            for(Contact ct : Contact_List)
+            {
+                if(ct.FirstName != Null)
+                {
+                    ct.Profile__c = ct.account.website + '/' + ct.FirstName.substring(0, 1) + ct.lastname;
+                }
+            }
+            update Contact_List;
+        }
+    }
+
+}
