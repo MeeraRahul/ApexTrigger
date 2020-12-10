@@ -1,0 +1,35 @@
+trigger amountTrue on Opportunity (after insert,after update) {
+Set<Id>AccountIds = new Set<Id>();
+    List<Account>Accounts = new List<Account>();
+    if(Trigger.New!=null)
+    {
+        for(Opportunity opp:Trigger.New)
+        {
+            if(opp.Amount>20000)
+            {
+                AccountIds.add(opp.AccountId);
+            }
+        }
+    }
+    List<Account>a=[Select Id,is_gold__c From Account WHERE ID IN : AccountIds];
+    if(a!=null)
+    {
+        for(Account acc : a)
+        {
+            acc.is_gold__c=TRUE;
+            Accounts.add(acc);
+        }
+       
+    }
+     else
+        {
+            
+            for(Account acc : a)
+        {
+            acc.is_gold__c=FALSE;
+            Accounts.add(acc);
+        }
+        }
+    update Accounts;
+    
+}
